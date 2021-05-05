@@ -13,19 +13,23 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	MinHeap h(10);
-	cout << "where is this break" << endl;
+	MinHeap h(3);
+	cout << "where is this line" << endl;
 	h.insert();
+	h.printRoot();
 	h.insert();
+	h.printRoot();
 	h.insert();
+	h.printRoot();
 	h.insert();
+	h.printRoot();
 	h.insert();
+	h.printRoot();
 	h.insert();
-	ofstream writeFile;
-        writeFile.open(argv[1], fstream::app);
-        h.write(writeFile);
-        writeFile.close();
-        h.printRoot();
+	h.printRoot();
+
+    h.write(argv[1]);
+    
 	return 0;
 }
 
