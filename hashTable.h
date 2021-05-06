@@ -12,19 +12,25 @@
 
 using namespace std;
 
-bool isPrime(int n);
-int nextPrime(int N);
-string sha256(const string str);
-
 // A class for Min Heap
 class HashTable
 {
 public:
+    
+    vector<Node> htarr;
+
+    int numElm;
+    int cap;
+    int tableLen;
+    MinHeap h = MinHeap(cap);
+
+    bool isPrime(int n);
+    int nextPrime(int N);
     // Constructor
-    HashTable(int size) { tableLen = nextPrime(size); numElm = 0; cap = size; }
+    HashTable(int size);
 
     // Destructor
-    ~HashTable();
+    //~HashTable();
 
     // Search for element returns index or -1 if not found
     int search(string s);
@@ -36,14 +42,9 @@ public:
     void deleteElm(string s);
 
     //print heap ascending order
-    void writeHeap(ofstream& file);
+    void writeHeap(string file);
 
-private:
-    int numElm;
-    int cap;
-    int tableLen = nextPrime(cap);
-    MinHeap::Node** htarr = new MinHeap::Node*[tableLen];
-    MinHeap h = MinHeap(cap);
+    string sha256(const string str);
 };
 
 #endif

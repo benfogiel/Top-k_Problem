@@ -4,6 +4,9 @@ main: main.o hashTable.o minHeap.o
 testMinHeap: testMinHeap.o minHeap.o
 	g++ -g -Wall -std=c++11  minHeap.o testMinHeap.o
 
+testHashTable: hashTable.o
+	g++ -g -Wall -std=c++11 hashTable.o testHashTable -lssl -lcrypto
+
 main.o: main.cpp
 	g++ -c main.cpp
 

@@ -9,27 +9,31 @@
 #include <cstring>
 #include "openssl/sha.h"
 
-using namespace std;
-
 int main(int argc, char **argv)
 {
-	HashTable h(5);
-	ifstream myfile;
-	myfile.open("testIn.txt");
-	string line;
-	while(getline(myfile,line))
-	{	
-		stringstream linestream(line);
-		string value;
+	// Initialize the HashTable Object
+	HashTable h(10);
+
+	// Construct the heap
+	std::string line;
+	std::string fn = argv[1];
+	std::fstream f;
+	f.open(fn.c_str(), ios::in);
+	if(f.is_open())
+	{
+		cout << "Opened file" << endl;
+		std::stringstream linestream(line);
+		std::string value;
 		while(getline(linestream,value,','))
 		{
+			cout << value;
 			h.insert(value);	
 		}
 	}
-	myfile.close();
-	ofstream writeFile;
-	writeFile.open("textOut.txt", fstream::app);
-	h.writeHeap(writeFile);
-	writeFile.close();
+
+	// Write the output file
+	std::string file(argv[2]);
+	h.writeHeap(file);
+
 	return 0;
 }

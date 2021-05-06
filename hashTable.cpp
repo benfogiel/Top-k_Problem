@@ -14,61 +14,68 @@
 
 using namespace std;
 
-// Destructor
-HashTable::~HashTable(){
-	for (int i = 0; i < tableLen; i++){
-                free(htarr[i]);
-        }
-        delete[] htarr;
+HashTable::HashTable(int size) 
+{ 
+    tableLen = nextPrime(size*2); 
+    numElm = 0; 
+    cap = size; 
+    Node n = Node();
+    n.str = "";
+    n.frequency = -1;
+    n.heapElm = nullptr;
+    htarr.resize(tableLen, n); 
 }
 
 void HashTable::insert(string str)
 {
+    cout << "Got to insert" << endl;
     int i = search(str);
-    if (i != -1){
-	htarr[i]->heapElm->frequency++;
-    	return;
+    cout << "After Search i: " << i << " Heap Elm " << htarr.at(i).heapElm << endl;
+    if (htarr.at(i).heapElm != nullptr)
+    {
+        cout << "Existing node found" << i << "Freq: " << htarr.at(i).heapElm->frequency  << endl;
+        htarr.at(i).heapElm->frequency = htarr.at(i).heapElm->frequency + 1;
+        cout << "iterated freq" << endl;
+        return;
     }
-    if (numElm == cap){
+    if (numElm == cap)
+    {
     	deleteElm(h.getRootString());
-	insert(str);
-	return;
+        insert(str);
+        return;
     }
-    int hash = stoi(sha256(str)); 
-    int index = hash % tableLen; 
-    int counter = 1;
-    while(htarr[index] != NULL){
-	index = (hash + counter*counter)%tableLen;
-	counter++;
-    }
-    MinHeap::Node* n = new MinHeap::Node();
-    htarr[index] = n;
-    n->str = str;
-    n->heapElm = h.insert();
+
+    Node n = Node();
+    n.str = str;
+    n.heapElm = h.insert(str);
+    htarr.at(i) = n;
     numElm++;
     return;
 }
 
 void HashTable::deleteElm(string s){
     int i = search(s);
-    free(htarr[i]);
-    htarr[i] = NULL;
+    htarr.at(i).heapElm = nullptr;
     numElm--;
 }
 
 int HashTable::search(string s){
+    cout << "got to search" << endl;
     int hash = stoi(sha256(s));
+    cout << "This is the hash" << hash << endl;
     int index = hash % tableLen;
     int counter = 1;
-    while(htarr[index]->str != s && counter < tableLen){
+    cout << "Index: " << index << endl;
+    while(htarr.at(index).str.compare(s) && htarr.at(index).heapElm != nullptr){
         index = (hash + counter*counter)%tableLen;
+        cout << "search index: " << index << endl;
         counter++;
     }
-    if(counter >= tableLen) return -1;
+    cout << "After loop index " << index << endl;
     return index;
 }
 
-bool isPrime(int n)
+bool HashTable::isPrime(int n)
 {
     if (n <= 1)  return false;
     if (n <= 3)  return true;
@@ -82,13 +89,14 @@ bool isPrime(int n)
 
 // Function to return the smallest
 // prime number greater than N
-int nextPrime(int N)
+int HashTable::nextPrime(int N)
 {
     if (N <= 1)
         return 2;
     int prime = N;
     bool found = false;
-    while (!found) {
+    while (!found) 
+    {
         prime++;
         if (isPrime(prime))
             found = true;
@@ -97,7 +105,7 @@ int nextPrime(int N)
 }
 
 //returns a hash given a string
-string sha256(const string str)
+string HashTable::sha256(const string str)
 {
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX c;
@@ -112,4 +120,28 @@ string sha256(const string str)
     return ss.str();
 }
 
-void HashTable::writeHeap(ofstream& file) { h.write(file); }
+void HashTable::writeHeap(string file) 
+{ 
+    cout << "Made it to writeHeap" << endl;
+    int freq;
+    ofstream writeFile;
+    writeFile.open(file, ios::app);
+    if (writeFile.is_open()){
+       while(h.getHeapSize() > 2){
+            cout << "started writing" << endl;
+            //freq = h.writeMin();
+            freq = htarr.at(search(h.getRootString())).heapElm->frequency;
+            cout << "Got frequency" << endl;
+            writeFile << "STRING" << h.getRootString() << ":" << "Frequency" << freq << ",";
+            h.deleteMin();
+       }
+       if(h.getHeapSize() == 2)
+       {
+            freq = htarr.at(search(h.getRootString())).heapElm->frequency;
+            cout << "Got frequency" << endl;
+            writeFile << "STRING" << h.getRootString() << ":" << "Frequency" << freq;
+            h.deleteMin();
+       }
+    }else cout << "no file was provided to write to" << endl;
+    writeFile.close();  
+}

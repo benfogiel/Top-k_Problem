@@ -15,20 +15,18 @@ int main(int argc, char **argv)
 {
 	MinHeap h(3);
 	cout << "where is this line" << endl;
-	h.insert();
+	h.insert("sdf");
 	h.printRoot();
-	h.insert();
+	h.insert("sdff");
 	h.printRoot();
-	h.insert();
+	h.insert("sdfsdf");
 	h.printRoot();
-	h.insert();
+	h.insert("sdsdff");
 	h.printRoot();
-	h.insert();
+	h.insert("sdfff");
 	h.printRoot();
-	h.insert();
+	h.insert("sddfdff");
 	h.printRoot();
-
-    h.write(argv[1]);
     
 	return 0;
 }

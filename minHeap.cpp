@@ -1,6 +1,6 @@
 //minHeap.cpp
 //Author: Benjamin Fogiel
- 
+
 #include "minHeap.h"
 #include <iostream>
 #include<cstring>
@@ -34,12 +34,12 @@ MinHeap::~MinHeap(){
 }
 */
 // Inserts a new key 'k'
-Node MinHeap::insert()
+Node* MinHeap::insert(string str)
 {
     if (heap_size == capacity)
     {
-	    swapMin();
-        return harr.at(1);
+	    swapMin(str);
+        return &harr.at(1);
     }
 
     if (heap_size == 1) {
@@ -47,9 +47,10 @@ Node MinHeap::insert()
         harr.push_back(n);
         harr.at(1).frequency = 1;
         harr.at(1).c = count;
+        harr.at(1).str = str;
         count++;
         heap_size++;
-        return harr.at(1);
+        return &harr.at(1);
     }
 
     Node n = Node();
@@ -58,6 +59,7 @@ Node MinHeap::insert()
     harr.push_back(n);
     harr.at(i).frequency = 1;
     harr.at(i).c = count;
+    harr.at(i).str = str;
     count++;
     heap_size++;
 
@@ -67,25 +69,26 @@ Node MinHeap::insert()
        swap(i,parent(i));
        i = parent(i);
     }
-    return n;
+    return &harr.at(i);
 }
 
 // delete min
-void MinHeap::deleteMin(){
+Node* MinHeap::deleteMin(){
 	harr.at(0) = harr.at(1);       
 	harr.at(1) = harr.at(heap_size - 1);
     harr.pop_back();
 	heap_size--;
 	MinHeapify(1);
-	return;
+	return harr.at(0).hashElm;
 }
 
 // Method to remove minimum element (or root) from min heap
-void MinHeap::swapMin()
+void MinHeap::swapMin(string str)
 {
     // Store the minimum value, and remove it from heap
     harr.at(1).frequency++;
     harr.at(1).c = count;
+    harr.at(1).str = str;
     count++;
     if (heap_size > 2)
     	MinHeapify(1);
@@ -131,21 +134,22 @@ bool MinHeap::compare(int i, int j){
 	return false;
 }
 
-void MinHeap::write(string file) {
-    ofstream writeFile;
-    writeFile.open(file, fstream::app);
-	if (writeFile.is_open()){
-	   while(heap_size > 2){
-	       writeFile << ":FREQUENCY" << harr.at(1).frequency << ",";
-            //Can't do bottom lines yet
-           //file << "STRING" << harr.at(1).hashElm->str << ":FREQUENCY" << harr.at(1).frequency << ",";
-	       deleteMin();
-	   }
-	}else cout << "no file was provided to write to" << endl;
-	//if(heap_size == 2) file << "STRING" << harr.at(1).hashElm->str << ":FREQUENCY" << harr.at(1).frequency;
-	writeFile.close();	
+string MinHeap::writeMin() {
+    string str;
+    int f;
+    f = harr.at(1).frequency;
+    cout << "Frequency found: " << f;
+    str = to_string(f);
+    if(heap_size != 2)
+    {
+        str += ",";
+        return str;
+    }
+    return str;
 }
 
 void MinHeap::printRoot() { cout << "Frequency: " << harr.at(1).frequency << " Count: " << harr.at(1).c << endl; }
 
-string MinHeap::getRootString() { return harr.at(1).hashElm->str; }
+string MinHeap::getRootString() { return harr.at(1).str; }
+
+void MinHeap::iterateFreq(int i) { harr.at(i).frequency++; }

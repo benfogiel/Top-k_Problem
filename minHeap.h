@@ -15,8 +15,9 @@ class Node {
 public:
     int c;
     int frequency;
-    Node* heapElm;
-    Node* hashElm;
+    // index of element in MinHeap
+    Node* heapElm = nullptr;
+    Node* hashElm = nullptr;
     string str;
 };
 
@@ -25,10 +26,11 @@ class MinHeap
 {
 public:
 
+    vector<Node> harr;
+
     int heap_size;
     int capacity;
     int count;
-    vector<Node> harr;
 
     // Constructor
     MinHeap(int cap);
@@ -48,10 +50,10 @@ public:
     int right(int i) { return (2*i + 1); }
   
     // to extract the root which is the minimum element
-    void swapMin();
+    void swapMin(string str);
   
     // Inserts a new key
-    Node insert();
+    Node* insert(string str);
 
     //returns true if value at index i > j
     bool compare(int i, int j);
@@ -63,11 +65,15 @@ public:
     string getRootString();
 
     //print heap in ascending order
-    void write(string file);
+    string writeMin();
 
-    void deleteMin();
+    Node* deleteMin();
 
     void printRoot();
+
+    int getHeapSize() { return heap_size; }
+
+    void iterateFreq(int i);
 };
 
 #endif
