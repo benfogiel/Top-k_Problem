@@ -9,7 +9,6 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include "openssl/sha.h"
 #include <random>
 #include<vector>
 
