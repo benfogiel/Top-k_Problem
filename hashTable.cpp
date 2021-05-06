@@ -9,7 +9,6 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include "openssl/sha.h"
 #include <random>
 
 using namespace std;
@@ -60,7 +59,7 @@ void HashTable::deleteElm(string s){
 
 int HashTable::search(string s){
     bool iterate = true;
-    stringstream hashstr(sha256(s));
+    stringstream hashstr(s);
     int hash = 0;
     hashstr >> hash;
     int index = hash % tableLen;
@@ -101,22 +100,6 @@ int HashTable::nextPrime(int N)
             found = true;
     }
     return prime;
-}
-
-//returns a hash given a string
-string HashTable::sha256(const string str)
-{
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX c;
-    SHA256_Init(&c);
-    SHA256_Update(&c, str.c_str(), str.size());
-    SHA256_Final(hash, &c);
-    stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        ss << hex << setw(2) << setfill('0') << (int)hash[i];
-    }
-    return ss.str();
 }
 
 void HashTable::writeHeap(string file) 
