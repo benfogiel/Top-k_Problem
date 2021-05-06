@@ -15,14 +15,15 @@ using namespace std;
 // A class for Min Heap
 class HashTable
 {
-public:
-    
+private:
     vector<Node> htarr;
 
     int numElm;
     int cap;
     int tableLen;
     MinHeap h = MinHeap(cap);
+
+public:
 
     bool isPrime(int n);
     int nextPrime(int N);

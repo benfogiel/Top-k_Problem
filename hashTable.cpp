@@ -22,32 +22,31 @@ HashTable::HashTable(int size)
     Node n = Node();
     n.str = "";
     n.frequency = -1;
-    n.heapElm = nullptr;
+    n.heapElm = 0;
     htarr.resize(tableLen, n); 
 }
 
-void HashTable::insert(string str)
+void HashTable::insert(string s)
 {
-    cout << "Got to insert" << endl;
-    int i = search(str);
-    cout << "After Search i: " << i << " Heap Elm " << htarr.at(i).heapElm << endl;
-    if (htarr.at(i).heapElm != nullptr)
+
+    int i;
+    i = search(s);
+    if (htarr.at(i).heapElm != 0)
     {
-        cout << "Existing node found" << i << "Freq: " << htarr.at(i).heapElm->frequency  << endl;
         htarr.at(i).heapElm->frequency = htarr.at(i).heapElm->frequency + 1;
-        cout << "iterated freq" << endl;
         return;
     }
     if (numElm == cap)
     {
     	deleteElm(h.getRootString());
-        insert(str);
+        insert(s);
         return;
     }
 
     Node n = Node();
-    n.str = str;
-    n.heapElm = h.insert(str);
+    n.str = s;
+    n.frequency = 0;
+    n.heapElm = h.insert(s);
     htarr.at(i) = n;
     numElm++;
     return;
@@ -60,18 +59,18 @@ void HashTable::deleteElm(string s){
 }
 
 int HashTable::search(string s){
-    cout << "got to search" << endl;
-    int hash = stoi(sha256(s));
-    cout << "This is the hash" << hash << endl;
+    bool iterate = true;
+    stringstream hashstr(sha256(s));
+    int hash = 0;
+    hashstr >> hash;
     int index = hash % tableLen;
     int counter = 1;
-    cout << "Index: " << index << endl;
-    while(htarr.at(index).str.compare(s) && htarr.at(index).heapElm != nullptr){
+    while(iterate){
+        if (htarr.at(index).str.compare(s) == 0) break;
+        if (htarr.at(index).frequency == -1) break;
         index = (hash + counter*counter)%tableLen;
-        cout << "search index: " << index << endl;
         counter++;
     }
-    cout << "After loop index " << index << endl;
     return index;
 }
 
@@ -122,26 +121,5 @@ string HashTable::sha256(const string str)
 
 void HashTable::writeHeap(string file) 
 { 
-    cout << "Made it to writeHeap" << endl;
-    int freq;
-    ofstream writeFile;
-    writeFile.open(file, ios::app);
-    if (writeFile.is_open()){
-       while(h.getHeapSize() > 2){
-            cout << "started writing" << endl;
-            //freq = h.writeMin();
-            freq = htarr.at(search(h.getRootString())).heapElm->frequency;
-            cout << "Got frequency" << endl;
-            writeFile << "STRING" << h.getRootString() << ":" << "Frequency" << freq << ",";
-            h.deleteMin();
-       }
-       if(h.getHeapSize() == 2)
-       {
-            freq = htarr.at(search(h.getRootString())).heapElm->frequency;
-            cout << "Got frequency" << endl;
-            writeFile << "STRING" << h.getRootString() << ":" << "Frequency" << freq;
-            h.deleteMin();
-       }
-    }else cout << "no file was provided to write to" << endl;
-    writeFile.close();  
+    h.writeMin(file);
 }

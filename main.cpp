@@ -12,7 +12,7 @@
 int main(int argc, char **argv)
 {
 	// Initialize the HashTable Object
-	HashTable h(10);
+	HashTable h(stoi(argv[3]));
 
 	// Construct the heap
 	std::string line;
@@ -21,13 +21,14 @@ int main(int argc, char **argv)
 	f.open(fn.c_str(), ios::in);
 	if(f.is_open())
 	{
-		cout << "Opened file" << endl;
+		while(getline(f,line))
+		{
 		std::stringstream linestream(line);
 		std::string value;
 		while(getline(linestream,value,','))
 		{
-			cout << value;
-			h.insert(value);	
+			h.insert(value);
+		}
 		}
 	}
 

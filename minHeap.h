@@ -24,13 +24,13 @@ public:
 // A class for Min Heap
 class MinHeap
 {
+private:
+    int heap_size;
+    const int capacity;
+    int count;
 public:
 
     vector<Node> harr;
-
-    int heap_size;
-    int capacity;
-    int count;
 
     // Constructor
     MinHeap(int cap);
@@ -65,7 +65,7 @@ public:
     string getRootString();
 
     //print heap in ascending order
-    string writeMin();
+    void writeMin(string files);
 
     Node* deleteMin();
 

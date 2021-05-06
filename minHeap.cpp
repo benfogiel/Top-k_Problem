@@ -2,6 +2,7 @@
 //Author: Benjamin Fogiel
 
 #include "minHeap.h"
+#include "hashTable.h"
 #include <iostream>
 #include<cstring>
 #include<iomanip>
@@ -15,12 +16,12 @@
 using namespace std;
 
 // Constructor: Builds a heap from a given array a[] of given size
-MinHeap::MinHeap(int cap)
+MinHeap::MinHeap(int cap) : capacity(cap+1)
 {
     heap_size = 1;
-    capacity = cap+1;
     count = 0;
     Node n = Node();
+    harr.resize(0);
     harr.push_back(n);
 }
 
@@ -36,23 +37,11 @@ MinHeap::~MinHeap(){
 // Inserts a new key 'k'
 Node* MinHeap::insert(string str)
 {
-    if (heap_size == capacity)
+    if (harr.size() == capacity)
     {
 	    swapMin(str);
         return &harr.at(1);
     }
-
-    if (heap_size == 1) {
-        Node n = Node();
-        harr.push_back(n);
-        harr.at(1).frequency = 1;
-        harr.at(1).c = count;
-        harr.at(1).str = str;
-        count++;
-        heap_size++;
-        return &harr.at(1);
-    }
-
     Node n = Node();
     // First insert the new key at the end
     int i = heap_size;
@@ -121,6 +110,7 @@ void MinHeap::MinHeapify(int i)
 // A utility function to swap two elements
 void MinHeap::swap(int x, int y)
 {
+
     Node n = Node();
     n = harr.at(x);
     harr.at(x) = harr.at(y);
@@ -134,18 +124,24 @@ bool MinHeap::compare(int i, int j){
 	return false;
 }
 
-string MinHeap::writeMin() {
-    string str;
-    int f;
-    f = harr.at(1).frequency;
-    cout << "Frequency found: " << f;
-    str = to_string(f);
-    if(heap_size != 2)
-    {
-        str += ",";
-        return str;
-    }
-    return str;
+void MinHeap::writeMin(string file) {
+    int freq;
+    ofstream writeFile;
+    writeFile.open(file, ios::app);
+    if (writeFile.is_open()){
+       while(heap_size > 2){
+            //freq = h.writeMin();
+            freq = harr.at(1).frequency;
+            writeFile << "STRING" << harr.at(1).str << ":" << "Frequency" << freq << ",";
+            deleteMin();
+       }
+       if(heap_size == 2)
+       {
+            freq = harr.at(1).frequency;
+            writeFile << "STRING" << harr.at(1).str << ":" << "Frequency" << freq;
+       }
+    }else cout << "no file was provided to write to" << endl;
+    writeFile.close();  
 }
 
 void MinHeap::printRoot() { cout << "Frequency: " << harr.at(1).frequency << " Count: " << harr.at(1).c << endl; }
