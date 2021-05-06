@@ -7,7 +7,6 @@
 #include <string>
 #include <fstream>
 #include <cstring>
-#include "openssl/sha.h"
 
 int main(int argc, char **argv)
 {
