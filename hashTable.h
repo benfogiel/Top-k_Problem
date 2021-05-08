@@ -17,11 +17,10 @@ class HashTable
 {
 private:
     vector<Node> htarr;
-
     int numElm;
     int cap;
     int tableLen;
-    MinHeap h = MinHeap(cap);
+    MinHeap* h;
 
 public:
 
@@ -37,15 +36,13 @@ public:
     int search(string s);
 
     // Insert
-    void insert(string s);
+    void insertHash(string s);
 
     // Delete Element
     void deleteElm(string s);
 
     //print heap ascending order
     void writeHeap(string file);
-
-    string sha256(const string str);
 };
 
 #endif

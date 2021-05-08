@@ -53,7 +53,7 @@ public:
     void swapMin(string str);
   
     // Inserts a new key
-    Node* insert(string str);
+    Node* insert(Node* hash);
 
     //returns true if value at index i > j
     bool compare(int i, int j);
@@ -72,8 +72,6 @@ public:
     void printRoot();
 
     int getHeapSize() { return heap_size; }
-
-    void iterateFreq(int i);
 };
 
 #endif

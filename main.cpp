@@ -8,31 +8,38 @@
 #include <fstream>
 #include <cstring>
 
+using namespace std;
+
 int main(int argc, char **argv)
 {
 	// Initialize the HashTable Object
-	HashTable h(stoi(argv[3]));
+	stringstream input(argv[3]);
+    int in = 0;
+    input >> in;
+    cout << in;
+    HashTable h(in);
 
 	// Construct the heap
-	std::string line;
-	std::string fn = argv[1];
-	std::fstream f;
+	string line;
+	string fn = argv[1];
+	fstream f;
 	f.open(fn.c_str(), ios::in);
 	if(f.is_open())
 	{
 		while(getline(f,line))
 		{
-		std::stringstream linestream(line);
-		std::string value;
+		stringstream linestream(line);
+		string value;
 		while(getline(linestream,value,','))
 		{
-			h.insert(value);
+			h.insertHash(value);
+			cout << value << endl;
 		}
 		}
 	}
 
 	// Write the output file
-	std::string file(argv[2]);
+	string file(argv[2]);
 	h.writeHeap(file);
 
 	return 0;

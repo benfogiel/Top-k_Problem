@@ -33,12 +33,19 @@ MinHeap::~MinHeap(){
 	delete harr;
 }
 */
-// Inserts a new key 'k'
-Node* MinHeap::insert(string str)
+// Inserts a new Node
+Node* MinHeap::insert(Node* hash)
 {
-    if (harr.size() == capacity)
+    if(harr.size() + 1 > capacity)
     {
-	    swapMin(str);
+        cout << "The heap is being a bitch" << endl;
+        exit(1);
+    }
+    if (harr.size() + 1 == capacity)
+    {
+        harr.at(1).hashElm = hash;
+        hash->heapElm = &harr.at(1);
+	    swapMin(hash->str);
         return &harr.at(1);
     }
     Node n = Node();
@@ -47,7 +54,8 @@ Node* MinHeap::insert(string str)
     harr.push_back(n);
     harr.at(i).frequency = 1;
     harr.at(i).c = count;
-    harr.at(i).str = str;
+    harr.at(i).str = hash->str;
+    harr.at(i).hashElm = hash;
     count++;
     heap_size++;
 
@@ -109,11 +117,9 @@ void MinHeap::MinHeapify(int i)
 // A utility function to swap two elements
 void MinHeap::swap(int x, int y)
 {
-
-    Node n = Node();
-    n = harr.at(x);
-    harr.at(x) = harr.at(y);
-    harr.at(y) = n;
+    harr.at(x).hashElm->heapElm = &harr.at(y);
+    harr.at(y).hashElm->heapElm = &harr.at(x);
+    std::swap(harr[x],harr[y]);
 }
 
 // compares two nodes in the heap. Will return true if the first index (i) is greater than the second (j)
@@ -126,18 +132,13 @@ bool MinHeap::compare(int i, int j){
 void MinHeap::writeMin(string file) {
     int freq;
     ofstream writeFile;
-    writeFile.open(file, ios::app);
+    writeFile.open(file, ios::trunc);
     if (writeFile.is_open()){
-       while(heap_size > 2){
+       while(heap_size > 1){
             //freq = h.writeMin();
             freq = harr.at(1).frequency;
-            writeFile << "STRING" << harr.at(1).str << ":" << "Frequency" << freq << ",";
+            writeFile << harr.at(1).str << ":" << freq << ",";
             deleteMin();
-       }
-       if(heap_size == 2)
-       {
-            freq = harr.at(1).frequency;
-            writeFile << "STRING" << harr.at(1).str << ":" << "Frequency" << freq;
        }
     }else cout << "no file was provided to write to" << endl;
     writeFile.close();  
@@ -146,5 +147,3 @@ void MinHeap::writeMin(string file) {
 void MinHeap::printRoot() { cout << "Frequency: " << harr.at(1).frequency << " Count: " << harr.at(1).c << endl; }
 
 string MinHeap::getRootString() { return harr.at(1).str; }
-
-void MinHeap::iterateFreq(int i) { harr.at(i).frequency++; }

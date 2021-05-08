@@ -22,10 +22,12 @@ HashTable::HashTable(int size)
     n.str = "";
     n.frequency = -1;
     n.heapElm = 0;
-    htarr.resize(tableLen, n); 
+    htarr.resize(tableLen, n);
+    MinHeap* heap = new MinHeap(cap); 
+    h = heap;
 }
 
-void HashTable::insert(string s)
+void HashTable::insertHash(string s)
 {
 
     int i;
@@ -37,36 +39,34 @@ void HashTable::insert(string s)
     }
     if (numElm == cap)
     {
-    	deleteElm(h.getRootString());
-        insert(s);
+    	deleteElm(h->getRootString());
+        insertHash(s);
         return;
     }
 
-    Node n = Node();
-    n.str = s;
-    n.frequency = 0;
-    n.heapElm = h.insert(s);
-    htarr.at(i) = n;
+    htarr.at(i).str = s;
+    htarr.at(i).frequency = 1;
+    htarr.at(i).heapElm = h->insert(&htarr.at(i));
     numElm++;
     return;
 }
 
+// deletes elm in Hash Table
 void HashTable::deleteElm(string s){
     int i = search(s);
+    // The heapElm pointer is the indication of if the bin is full
     htarr.at(i).heapElm = nullptr;
     numElm--;
 }
 
 int HashTable::search(string s){
-    bool iterate = true;
     stringstream hashstr(s);
     int hash = 0;
     hashstr >> hash;
     int index = hash % tableLen;
     int counter = 1;
-    while(iterate){
-        if (htarr.at(index).str.compare(s) == 0) break;
-        if (htarr.at(index).frequency == -1) break;
+    while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0))
+    {
         index = (hash + counter*counter)%tableLen;
         counter++;
     }
@@ -104,5 +104,5 @@ int HashTable::nextPrime(int N)
 
 void HashTable::writeHeap(string file) 
 { 
-    h.writeMin(file);
+    h->writeMin(file);
 }
