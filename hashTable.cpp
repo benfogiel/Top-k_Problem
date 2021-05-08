@@ -32,11 +32,15 @@ void HashTable::insertHash(string s)
 
     int i;
     i = search(s);
+
+    // if elm already exists
     if (htarr.at(i).heapElm != 0)
     {
         htarr.at(i).heapElm->frequency = htarr.at(i).heapElm->frequency + 1;
         return;
     }
+
+    // if heap is full
     if (numElm == cap)
     {
     	deleteElm(h->getRootString());
