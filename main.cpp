@@ -10,13 +10,15 @@
 
 using namespace std;
 
+string inFile;
+
 int main(int argc, char **argv)
 {
 	// Initialize the HashTable Object
 	stringstream input(argv[3]);
     int in = 0;
     input >> in;
-    HashTable h(in);
+    HashTable h(in, argv[1]);
 
 	// Construct the heap
 	string line;

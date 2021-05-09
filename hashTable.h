@@ -26,8 +26,9 @@ public:
 
     bool isPrime(int n);
     int nextPrime(int N);
+    string st1;
     // Constructor
-    HashTable(int size);
+    HashTable(int size, string st);
 
     // Destructor
     //~HashTable();

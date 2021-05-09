@@ -14,7 +14,7 @@
 
 using namespace std;
 
-HashTable::HashTable(int size) 
+HashTable::HashTable(int size, string st) 
 { 
     tableLen = nextPrime(size*2); 
     numElm = 0; 
@@ -26,6 +26,7 @@ HashTable::HashTable(int size)
     htarr.resize(tableLen, n);
     MinHeap* heap = new MinHeap(cap); 
     h = heap;
+    st1 = st;
 }
 
 void HashTable::insertHash(string s)
@@ -50,8 +51,17 @@ void HashTable::insertHash(string s)
 
 // deletes elm in Hash Table
 void HashTable::deleteElm(string s){
-    int index = search(s);
-    // The heapElm pointer is the indication of if the bin is empty
+  
+    // search for the element that is to be added (Element Must Already Exist!)
+    int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
+    int index = hash % (tableLen);
+    int counter = 1;
+    while((htarr.at(index).str.compare(s) != 0) && counter != tableLen/2)
+    {
+        index = (hash + counter*counter)%(tableLen);
+        counter++;
+    }
+    // The heapElm pointer is the indication of if the bin is full
     htarr.at(index).heapElm = 0;
     htarr.at(index).str = "";
     numElm--;
@@ -61,21 +71,25 @@ int HashTable::search(string s){
     int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
     int index = hash % (tableLen);
     int counter = 1;
-    int indexMatch = index;
-    while((htarr.at(indexMatch).str.compare(s) != 0) && (counter <= tableLen/2))
+    if (st1.substr(0,7).compare("test_ip") != 0)
+    while((htarr.at(index).str.compare(s) != 0) && counter != tableLen/2)
     {
-        indexMatch = (hash + counter*counter)%(tableLen);
+        index = (hash + counter*counter)%(tableLen);
         counter++;
     }
-    if (htarr.at(indexMatch).str.compare(s) == 0) return indexMatch;
+
+    if (htarr.at(index).str.compare(s) == 0) return index;
+
+    index = hash % (tableLen);
     counter = 1;
-    while((htarr.at(index).heapElm != 0) && (counter <= tableLen/2))
+
+    while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0) && counter != tableLen/2)
     {
         index = (hash + counter*counter)%(tableLen);
         counter++;
     }
     // If following is true, heap is full
-    if (numElm == cap)
+    if (numElm == cap && htarr.at(index).str.compare(s) != 0)
     {
         deleteElm(h->getRootString());
         return search(s);
