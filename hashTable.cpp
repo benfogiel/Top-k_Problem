@@ -70,6 +70,14 @@ int HashTable::search(string s){
     int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
     int index = hash % (tableLen);
     int counter = 1;
+    int indexMatch = index;
+    while((htarr.at(indexMatch).str.compare(s) != 0) && counter != tableLen/2)
+    {
+        indexMatch = (hash + counter*counter)%(tableLen);
+        counter++;
+    }
+    if (htarr.at(indexMatch).str.compare(s) == 0) return indexMatch;
+    counter = 1;
     while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0) && counter != tableLen/2)
     {
         index = (hash + counter*counter)%(tableLen);
