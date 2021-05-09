@@ -50,16 +50,7 @@ void HashTable::insertHash(string s)
 
 // deletes elm in Hash Table
 void HashTable::deleteElm(string s){
-  
-    // search for the element that is to be added (Element Must Already Exist!)
-    int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
-    int index = hash % (tableLen);
-    int counter = 1;
-    while((htarr.at(index).str.compare(s) != 0) && counter <= tableLen/2)
-    {
-        index = (hash + counter*counter)%(tableLen);
-        counter++;
-    }
+    int index = search(s);
     // The heapElm pointer is the indication of if the bin is empty
     htarr.at(index).heapElm = 0;
     htarr.at(index).str = "";
@@ -71,14 +62,14 @@ int HashTable::search(string s){
     int index = hash % (tableLen);
     int counter = 1;
     int indexMatch = index;
-    while((htarr.at(indexMatch).str.compare(s) != 0) && counter <= tableLen/2)
+    while((htarr.at(indexMatch).str.compare(s) != 0) && (counter <= tableLen/2))
     {
         indexMatch = (hash + counter*counter)%(tableLen);
         counter++;
     }
     if (htarr.at(indexMatch).str.compare(s) == 0) return indexMatch;
     counter = 1;
-    while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0) && counter <= tableLen/2)
+    while((htarr.at(index).heapElm != 0) && (counter <= tableLen/2))
     {
         index = (hash + counter*counter)%(tableLen);
         counter++;
