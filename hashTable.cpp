@@ -10,6 +10,7 @@
 #include <string>
 #include <fstream>
 #include <random>
+#include<cmath>
 
 using namespace std;
 
@@ -36,44 +37,50 @@ void HashTable::insertHash(string s)
     // if elm already exists
     if (htarr.at(i).heapElm != 0)
     {
-        htarr.at(i).heapElm->frequency = htarr.at(i).heapElm->frequency + 1;
-        return;
-    }
-
-    // if heap is full
-    if (numElm == cap)
-    {
-    	deleteElm(h->getRootString());
-        insertHash(s);
+        h->iterateFreq(htarr.at(i).heapElm);
         return;
     }
 
     htarr.at(i).str = s;
     htarr.at(i).frequency = 1;
-    htarr.at(i).heapElm = h->insert(&htarr.at(i));
+    h->insert(&htarr.at(i));
     numElm++;
     return;
 }
 
 // deletes elm in Hash Table
 void HashTable::deleteElm(string s){
-    int i = search(s);
+  
+    // search for the element that is to be added (Element Must Already Exist!)
+    int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
+    int index = hash % (tableLen);
+    int counter = 1;
+    while((htarr.at(index).str.compare(s) != 0) && counter != tableLen/2)
+    {
+        index = (hash + counter*counter)%(tableLen);
+        counter++;
+    }
     // The heapElm pointer is the indication of if the bin is full
-    htarr.at(i).heapElm = nullptr;
+    htarr.at(index).heapElm = 0;
+    htarr.at(index).str = "";
     numElm--;
 }
 
 int HashTable::search(string s){
-    stringstream hashstr(s);
-    int hash = 0;
-    hashstr >> hash;
-    int index = hash % tableLen;
+    int hash = abs(static_cast<int>(std::hash<std::string>{}(s)));
+    int index = hash % (tableLen);
     int counter = 1;
-    while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0))
+    while((htarr.at(index).str.compare(s) != 0) && (htarr.at(index).heapElm != 0) && counter != tableLen/2)
     {
-        index = (hash + counter*counter)%tableLen;
+        index = (hash + counter*counter)%(tableLen);
         counter++;
     }
+    // If following is true, heap is full
+    if (numElm == cap && htarr.at(index).str.compare(s) != 0)
+    {
+        deleteElm(h->getRootString());
+        return search(s);
+    } 
     return index;
 }
 
@@ -107,6 +114,14 @@ int HashTable::nextPrime(int N)
 }
 
 void HashTable::writeHeap(string file) 
-{ 
-    h->writeMin(file);
+{
+    ofstream writeFile;
+    writeFile.open(file, ios::trunc);
+    if (writeFile.is_open()){
+       while(h->getHeapSize() > 0){
+            writeFile << h->getRoot()->str << ":" << h->getRoot()->frequency << ",";
+            h->deleteMin();
+       }
+    }else cout << "no file was provided to write to" << endl;
+    writeFile.close(); 
 }

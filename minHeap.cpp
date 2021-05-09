@@ -15,67 +15,53 @@
 using namespace std;
 
 // Constructor: Builds a heap from a given array a[] of given size
-MinHeap::MinHeap(int cap) : capacity(cap+1)
+MinHeap::MinHeap(int cap) : capacity(cap)
 {
-    heap_size = 1;
+    heap_size = 0;
     count = 0;
     Node n = Node();
     harr.resize(0);
     harr.push_back(n);
 }
 
-/*
-//Destructor
-MinHeap::~MinHeap(){
-	for (int i = 0; i < capacity; i++){
-		free(harr[i]);
-	}
-	delete harr;
-}
-*/
 // Inserts a new Node
-Node* MinHeap::insert(Node* hash)
+void MinHeap::insert(Node* hash)
 {
-    if(harr.size() + 1 > capacity)
-    {
-        cout << "The heap is being a bitch" << endl;
-        exit(1);
-    }
-    if (harr.size() + 1 == capacity)
+    if (harr.size() == capacity + 1)
     {
         harr.at(1).hashElm = hash;
         hash->heapElm = &harr.at(1);
 	    swapMin(hash->str);
-        return &harr.at(1);
+        return;
     }
     Node n = Node();
     // First insert the new key at the end
-    int i = heap_size;
+    int i = harr.size();
     harr.push_back(n);
     harr.at(i).frequency = 1;
     harr.at(i).c = count;
     harr.at(i).str = hash->str;
     harr.at(i).hashElm = hash;
+    hash->heapElm = &harr.at(i);
     count++;
     heap_size++;
 
     // Fix the min heap property if it is violated
-    while (i > 1 && compare(parent(i),i))
+    while (i > 0 && compare(parent(i),i))
     {
        swap(i,parent(i));
        i = parent(i);
     }
-    return &harr.at(i);
+    return;
 }
 
 // delete min
-Node* MinHeap::deleteMin(){
+void MinHeap::deleteMin(){
 	harr.at(0) = harr.at(1);       
-	harr.at(1) = harr.at(heap_size - 1);
+	swap(1, harr.size()-1);
     harr.pop_back();
 	heap_size--;
 	MinHeapify(1);
-	return harr.at(0).hashElm;
 }
 
 // Method to remove minimum element (or root) from min heap
@@ -86,7 +72,7 @@ void MinHeap::swapMin(string str)
     harr.at(1).c = count;
     harr.at(1).str = str;
     count++;
-    if (heap_size > 2)
+    if (heap_size > 1)
     	MinHeapify(1);
     return;
 }
@@ -99,11 +85,11 @@ void MinHeap::MinHeapify(int i)
     int l = left(i);
     int r = right(i);
     int smallest = i;
-    if (l < heap_size && !compare(l,i))
+    if (l < heap_size+1 && !compare(l,i))
     {
     	smallest = l;
     }
-    if (r < heap_size && !compare(r,smallest))
+    if (r < heap_size+1 && !compare(r,smallest))
     {
         smallest = r;
     }
@@ -129,21 +115,20 @@ bool MinHeap::compare(int i, int j){
 	return false;
 }
 
-void MinHeap::writeMin(string file) {
-    int freq;
-    ofstream writeFile;
-    writeFile.open(file, ios::trunc);
-    if (writeFile.is_open()){
-       while(heap_size > 1){
-            //freq = h.writeMin();
-            freq = harr.at(1).frequency;
-            writeFile << harr.at(1).str << ":" << freq << ",";
-            deleteMin();
-       }
-    }else cout << "no file was provided to write to" << endl;
-    writeFile.close();  
-}
-
 void MinHeap::printRoot() { cout << "Frequency: " << harr.at(1).frequency << " Count: " << harr.at(1).c << endl; }
 
 string MinHeap::getRootString() { return harr.at(1).str; }
+
+void MinHeap::iterateFreq(Node* n) {
+    for (int i = 1; i < heap_size + 1; i++)
+    {
+        if (harr.at(i).str.compare(n->str) == 0)
+        {
+            harr.at(i).frequency++;
+            MinHeapify(i);
+            return;
+        }
+    }
+    cout << "MinHeap::iterateFreq did not find the element in the heap" << endl;
+    exit(1);
+}

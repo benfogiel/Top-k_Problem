@@ -16,7 +16,6 @@ int main(int argc, char **argv)
 	stringstream input(argv[3]);
     int in = 0;
     input >> in;
-    cout << in;
     HashTable h(in);
 
 	// Construct the heap
@@ -33,7 +32,6 @@ int main(int argc, char **argv)
 		while(getline(linestream,value,','))
 		{
 			h.insertHash(value);
-			cout << value << endl;
 		}
 		}
 	}

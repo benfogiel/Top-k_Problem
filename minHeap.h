@@ -35,9 +35,6 @@ public:
     // Constructor
     MinHeap(int cap);
 
-    // Destructor
-    //~MinHeap();
-
     // to heapify a subtree with the root at given index
     void MinHeapify(int i);
   
@@ -53,7 +50,7 @@ public:
     void swapMin(string str);
   
     // Inserts a new key
-    Node* insert(Node* hash);
+    void insert(Node* hash);
 
     //returns true if value at index i > j
     bool compare(int i, int j);
@@ -64,14 +61,15 @@ public:
     // Returns the string that refers to the root node
     string getRootString();
 
-    //print heap in ascending order
-    void writeMin(string files);
-
-    Node* deleteMin();
+    void deleteMin();
 
     void printRoot();
 
     int getHeapSize() { return heap_size; }
+
+    Node* getRoot() { return &harr.at(1); }
+
+    void iterateFreq(Node* n);
 };
 
 #endif
