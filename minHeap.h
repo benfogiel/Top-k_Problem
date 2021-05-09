@@ -69,7 +69,7 @@ public:
 
     Node* getRoot() { return &harr.at(1); }
 
-    void iterateFreq(Node* n);
+    void iterateFreq(string s);
 };
 
 #endif

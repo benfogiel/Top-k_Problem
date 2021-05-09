@@ -37,7 +37,7 @@ void HashTable::insertHash(string s)
     // if elm already exists
     if (htarr.at(i).heapElm != 0)
     {
-        h->iterateFreq(htarr.at(i).heapElm);
+        h->iterateFreq(s);
         return;
     }
 
@@ -75,7 +75,7 @@ int HashTable::search(string s){
         counter++;
     }
     // If following is true, heap is full
-    if (numElm == cap && htarr.at(index).str.compare(s) != 0)
+    if (numElm == cap)
     {
         deleteElm(h->getRootString());
         return search(s);

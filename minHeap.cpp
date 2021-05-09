@@ -119,10 +119,10 @@ void MinHeap::printRoot() { cout << "Frequency: " << harr.at(1).frequency << " C
 
 string MinHeap::getRootString() { return harr.at(1).str; }
 
-void MinHeap::iterateFreq(Node* n) {
+void MinHeap::iterateFreq(string s) {
     for (int i = 1; i < heap_size + 1; i++)
     {
-        if (harr.at(i).str.compare(n->str) == 0)
+        if (harr.at(i).str.compare(s) == 0)
         {
             harr.at(i).frequency++;
             MinHeapify(i);
